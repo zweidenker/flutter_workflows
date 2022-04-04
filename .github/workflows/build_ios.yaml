@@ -1,0 +1,90 @@
+on:
+  workflow_call:
+    inputs:
+      appDirectory:
+        required: true
+        type: string
+      matchHost:
+        required: false
+        default: bitbucket.org
+        type: string
+      upload:
+        required: false
+        default: false
+        type: boolean
+      fastlaneEnv:
+        required: true
+        type: string
+    secrets:
+      additionalBuildArguments:
+        required: false
+      matchPassword:
+        required: true
+      apiKey:
+        required: true
+      matchSSHKey:
+        required: true
+      
+
+jobs:
+  build_ios:
+    name: Build iOS App
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: subosito/flutter-action@v2
+
+      - name: Set Build Number
+        shell: bash
+        run: |
+          buildNumber=$(.github/scripts/generate_build_number.sh "./${{ inputs.appDirectory }}/pubspec.yaml" $GITHUB_RUN_NUMBER)
+          echo BUILD_NUMBER=$buildNumber >> $GITHUB_ENV
+      - name: Match SSH Key
+        env:
+          RAW_KEY: ${{ secrets.MATCH_GIT_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh/
+          keyLocation="match-private-key"
+          echo "${{ secrets.matchSSHKey }}" > ~/.ssh/$keyLocation
+          sudo chmod 400 ~/.ssh/$keyLocation
+          ssh-add ~/.ssh/$keyLocation
+          ssh-keyscan ${{ inputs.matchHost }} >> ~/.ssh/known_hosts
+          echo MATCH_GIT_PRIVATE_KEY=~/.ssh/$keyLocation >> $GITHUB_ENV
+      - name: Fastlane Certificates
+        uses: maierj/fastlane-action@v2.2.0
+        env:
+          IOS_API_KEY: ${{ secrets.apiKey }}
+          MATCH_PASSWORD: ${{ secrets.matchPassword }}
+        with:
+          verbose: true
+          lane: certificates
+          subdirectory: ./${{ inputs.appDirectory }}/ios
+          env: ${{ inputs.fastlaneEnv }}
+          bundle-install-path: 'vendor/bundle'
+      - name: Flutter Build
+        working-directory: ${{ inputs.appDirectory }}
+        run: flutter build ios --no-codesign --build-number=${{ env.BUILD_NUMBER }} ${{ secrets.additionalBuildArguments}}
+      - name: Fastlane Build
+        uses: maierj/fastlane-action@v2.2.0
+        with:
+          verbose: true
+          lane: buildApp
+          subdirectory: ./${{ inputs.appDirectory }}/ios
+          env: ${{ inputs.fastlaneEnv }}
+          bundle-install-path: 'vendor/bundle'
+      - name: Upload to Testflight
+        if: ${{ inputs.upload }} && github.event_name != 'pull_request'
+        run: |
+          keyLocation=${{ github.workspace}}/${{ inputs.appDirectory }}/ios/apiKey.json
+          echo "${{ secrets.apiKey }} > $keyLocation
+          echo IOS_API_KEY=$keyLocation >> $GITHUB_ENV
+      - name: Upload to Testflight
+        if: ${{ inputs.upload }} && github.event_name != 'pull_request'
+        uses: maierj/fastlane-action@v2.2.0
+        with:
+          verbose: true
+          lane: uploadApp
+          subdirectory: ./${{ inputs.appDirectory }}/ios
+          env: ${{ inputs.fastlaneEnv }}
+          bundle-install-path: 'vendor/bundle'

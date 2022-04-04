@@ -4,10 +4,6 @@ on:
       appDirectory:
         required: true
         type: string
-      additionalBuildArguments:
-        required: false
-        default: ''
-        type: string
       buildApk:
         required: false
         default: true
@@ -21,6 +17,8 @@ on:
         default: false
         type: boolean
     secrets:
+      additionalBuildArguments:
+        required: false
       keyStore:
         required: true
       keyStorePassword:
@@ -64,11 +62,11 @@ jobs:
       - name: Build Apk
         if: inputs.buildApk
         working-directory: ${{ inputs.appDirectory }}
-        run: flutter build apk --build-number=${{ env.BUILD_NUMBER }} ${{ inputs.additionalBuildArguments}}
+        run: flutter build apk --build-number=${{ env.BUILD_NUMBER }} ${{ secrets.additionalBuildArguments}}
       - name: Build Bundle
         if: inputs.buildBundle
         working-directory: ${{ inputs.appDirectory }}
-        run: flutter build appbundle --build-number=${{ env.BUILD_NUMBER }} ${{ inputs.additionalBuildArguments}}
+        run: flutter build appbundle --build-number=${{ env.BUILD_NUMBER }} ${{ secrets.additionalBuildArguments}}
       - name: Copy Google Key
         if: inputs.upload && secrets.googleApiKey != null && github.event_name != 'pull_request'
         run: |

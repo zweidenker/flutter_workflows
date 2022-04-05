@@ -49,8 +49,6 @@ jobs:
           buildNumber=$(($(($(((major * 100000000) + (minor * 1000000))) + (patch * 10000))) + $GITHUB_RUN_NUMBER))
           echo BUILD_NUMBER=$buildNumber >> $GITHUB_ENV
       - name: Match SSH Key
-        env:
-          RAW_KEY: ${{ secrets.MATCH_GIT_PRIVATE_KEY }}
         run: |
           mkdir -p ~/.ssh/
           keyLocation="match-private-key"

@@ -76,13 +76,13 @@ jobs:
         working-directory: ${{ inputs.appDirectory }}
         run: flutter build appbundle --build-number=${{ env.BUILD_NUMBER }} ${{ secrets.additionalBuildArguments}}
       - name: Copy Google Key
-        if: inputs.upload == true && secrets.googleApiKey != '' && github.event_name != 'pull_request'
+        if: inputs.upload == true && ${{ secrets.googleApiKey }} != '' && github.event_name != 'pull_request'
         run: |
           keyLocation=${{ github.workspace}}/${{ inputs.appDirectory }}/android/uploadKey.json
           echo "${{ secrets.googleApiKey }}" > $keyLocation
           echo GOOGLE_UPLOAD_KEY=$keyLocation >> $GITHUB_ENV
       - name: Upload to Google Play
-        if: inputs.upload == true && secrets.googleApiKey != '' && github.event_name != 'pull_request'
+        if: inputs.upload == true && ${{ secrets.googleApiKey }} != '' && github.event_name != 'pull_request'
         uses: maierj/fastlane-action@v2.2.0
         with:
           verbose: true

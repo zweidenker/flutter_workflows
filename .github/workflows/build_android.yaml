@@ -62,11 +62,11 @@ jobs:
           keyPassword: ${{ secrets.keyPassword }}
           keyAlias: ${{ secrets.keyAlias }}
         run: |
-          echo ${{ env.androidKeyStore }} | base64 --decode > ${{ env.keystorePath }}
-          echo storePassword=${{ env.keyStorePassword }} >> ${{ env.keyPropertiesPath }}
-          echo keyPassword=${{ env.keyPassword }} >> ${{ env.keyPropertiesPath }}
-          echo keyAlias=${{ env.keyAlias }} >> ${{ env.keyPropertiesPath }}
-          echo storeFile=${{ env.keystorePath }} >> ${{ env.keyPropertiesPath }}
+          echo "${{ env.androidKeyStore }}" | base64 --decode > ${{ env.keystorePath }}
+          echo storePassword="${{ env.keyStorePassword }}" >> ${{ env.keyPropertiesPath }}
+          echo keyPassword="${{ env.keyPassword }}" >> ${{ env.keyPropertiesPath }}
+          echo keyAlias="${{ env.keyAlias }}" >> ${{ env.keyPropertiesPath }}
+          echo storeFile="${{ env.keystorePath }}" >> ${{ env.keyPropertiesPath }}
       - name: Build Apk
         if: inputs.buildApk
         working-directory: ${{ inputs.appDirectory }}

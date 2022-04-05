@@ -43,7 +43,15 @@ jobs:
       - name: Set Build Number
         shell: bash
         run: |
-          buildNumber=$(https://github.com/zweidenker/flutter_workflows/.github/scripts/generate_build_number.sh "./${{ inputs.appDirectory }}/pubspec.yaml" $GITHUB_RUN_NUMBER)
+          file=./${{ inputs.appDirectory }}/pubspec.yaml
+          version=$(awk '/version/{print $NF}' "$file")
+          IFS='.' read -r -a numbers <<< "$version"
+          major=${numbers[0]}
+          minor=${numbers[1]}
+          IFS='+' read -r -a patchAndBuild <<< "${numbers[2]}"
+          patch=${patchAndBuild[0]}
+
+          buildNumber=$(($(($(((major * 100000000) + (minor * 1000000))) + (patch * 10000))) + $GITHUB_RUN_NUMBER))
           echo BUILD_NUMBER=$buildNumber >> $GITHUB_ENV
       - name: Setup Signing
         env:

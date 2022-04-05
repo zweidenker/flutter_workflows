@@ -55,7 +55,7 @@ jobs:
           echo "${{ secrets.matchSSHKey }}" > ~/.ssh/$keyLocation
           sudo chmod 400 ~/.ssh/$keyLocation
           ssh-add ~/.ssh/$keyLocation
-          ssh-keyscan "${{ inputs.matchHost }}"" >> ~/.ssh/known_hosts
+          ssh-keyscan "${{ inputs.matchHost }}" >> ~/.ssh/known_hosts
           echo MATCH_GIT_PRIVATE_KEY=~/.ssh/$keyLocation >> $GITHUB_ENV
       - name: Fastlane Certificates
         uses: maierj/fastlane-action@v2.2.0
@@ -80,13 +80,13 @@ jobs:
           env: ${{ inputs.fastlaneEnv }}
           bundle-install-path: 'vendor/bundle'
       - name: Setup upload API Key
-        if: ${{ inputs.upload }} && github.event_name != 'pull_request'
+        if: inputs.upload && github.event_name != 'pull_request'
         run: |
           keyLocation=${{ github.workspace}}/${{ inputs.appDirectory }}/ios/apiKey.json
-          echo "${{ secrets.apiKey }} > $keyLocation
+          echo "${{ secrets.apiKey }}" > $keyLocation
           echo IOS_API_KEY=$keyLocation >> $GITHUB_ENV
       - name: Upload to Testflight
-        if: ${{ inputs.upload }} && github.event_name != 'pull_request'
+        if: inputs.upload && github.event_name != 'pull_request'
         uses: maierj/fastlane-action@v2.2.0
         with:
           verbose: true

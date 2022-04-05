@@ -83,7 +83,7 @@ jobs:
         if: inputs.upload && github.event_name != 'pull_request'
         run: |
           keyLocation=${{ github.workspace }}/${{ inputs.appDirectory }}/ios/apple_api_key.json
-          printf '%s\n' "${{ secrets.apiKey }}" > $keyLocation
+          printf "${{ secrets.apiKey }}" > $keyLocation
           echo IOS_API_KEY=$keyLocation >> $GITHUB_ENV
       - name: Upload to Testflight
         if: inputs.upload && github.event_name != 'pull_request'

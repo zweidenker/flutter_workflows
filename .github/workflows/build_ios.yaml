@@ -79,15 +79,17 @@ jobs:
           subdirectory: ./${{ inputs.appDirectory }}/ios
           env: ${{ inputs.fastlaneEnv }}
           bundle-install-path: 'vendor/bundle'
-      - name: Setup upload API Key
-        if: inputs.upload && github.event_name != 'pull_request'
-        run: |
-          keyLocation=/apiKey.json
-          echo "${{ secrets.apiKey }}" > $keyLocation
-          echo IOS_API_KEY=$keyLocation >> $GITHUB_ENV
+      ##- name: Setup upload API Key
+      ##  if: inputs.upload && github.event_name != 'pull_request'
+      ##  run: |
+      ##    keyLocation=${{ github.workspace }}/${{ inputs.appDirectory }}/ios/apiKey.json
+      ##    echo "${{ secrets.apiKey }}" > $keyLocation
+      ##    echo IOS_API_KEY=$keyLocation >> $GITHUB_ENV
       - name: Upload to Testflight
         if: inputs.upload && github.event_name != 'pull_request'
         uses: maierj/fastlane-action@v2.2.0
+        env:
+          IOS_API_KEY: ${{ secrets.apiKey }}
         with:
           verbose: true
           lane: uploadApp

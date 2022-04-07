@@ -16,6 +16,10 @@ on:
         required: false
         default: false
         type: boolean
+      archiveArtifacts:
+        required: false
+        default: false
+        type: boolean
     secrets:
       additionalBuildArguments:
         required: false
@@ -29,7 +33,6 @@ on:
         required: true
       googleApiKey:
         required: false
-      
 
 jobs:
   build_android:
@@ -75,6 +78,15 @@ jobs:
         if: inputs.buildBundle
         working-directory: ${{ inputs.appDirectory }}
         run: flutter build appbundle --build-number=${{ env.BUILD_NUMBER }} ${{ secrets.additionalBuildArguments}}
+      - name: Archive Artifacts
+        if: inputs.archiveArtifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: Android Apps
+          retention-days: 5
+          path: |
+            **/release/**/*.apk
+            **/release/**/app-release.aab
       - name: Upload to Google Play
         if: inputs.upload == true && github.event_name != 'pull_request'
         uses: maierj/fastlane-action@v2.2.0
@@ -84,4 +96,4 @@ jobs:
           verbose: true
           lane: uploadApp
           subdirectory: ./${{ inputs.appDirectory }}/android
-          bundle-install-path: 'vendor/bundle'
+          bundle-install-path: "vendor/bundle"

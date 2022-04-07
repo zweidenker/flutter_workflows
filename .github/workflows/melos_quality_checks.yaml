@@ -33,3 +33,11 @@ jobs:
       - name: Run Tests
         if: ${{ inputs.test }}
         run: melos run test:coverage:all
+      - name: Archive Golden failures
+        if: ${{ inputs.test }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: Golden failures
+          retention-days: 5
+          path: |
+            **/test/**/failures/**/*.*

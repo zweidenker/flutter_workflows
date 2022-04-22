@@ -10,6 +10,7 @@ Workflows used at [ZWEIDENKER](https://zweidenker.de) to build and deploy Flutte
     with:
         setup: true
         lint: false
+        test: true
         test:true
 ```
 

@@ -11,7 +11,6 @@ Workflows used at [ZWEIDENKER](https://zweidenker.de) to build and deploy Flutte
         setup: true
         lint: false
         test: true
-        test:true
 ```
 
 Performs quality checks for repositories using [melos](https://github.com/invertase/melos)

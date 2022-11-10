@@ -19,6 +19,10 @@ on:
         required: false
         default: false
         type: boolean
+      runner:
+        required: false
+        type: string
+        default: macos-latest
     secrets:
       additionalBuildArguments:
         required: false
@@ -33,7 +37,7 @@ on:
 jobs:
   build_ios:
     name: Build iOS App
-    runs-on: macos-latest
+    runs-on: ${{ inputs.runner }}
 
     steps:
       - uses: actions/checkout@v2

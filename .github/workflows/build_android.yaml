@@ -24,6 +24,10 @@ on:
         required: false
         default: false
         type: boolean
+      runner:
+        required: false
+        type: string
+        default: ubuntu-latest
     secrets:
       additionalBuildArguments:
         required: false
@@ -41,7 +45,7 @@ on:
 jobs:
   build_android:
     name: Build Android App
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runner }}
 
     steps:
       - uses: actions/checkout@v2

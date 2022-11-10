@@ -17,11 +17,12 @@ Performs quality checks for repositories using [melos](https://github.com/invert
 
 ### Inputs
 
-| Name  | Type      | Description                              | Default | required |
-|-------|-----------|------------------------------------------|---------|----------|
-| setup | `boolean` | Should run `melos run setup`             | true    |          |
-| lint  | `boolean` | Should run `melos run lint:all`          | true    |          |
-| test  | `boolean` | Should run `melos run test:coverage:all` | true    |          |
+| Name   | Type      | Description                              | Default       | required |
+|--------|-----------|------------------------------------------|---------------|----------|
+| setup  | `boolean` | Should run `melos run setup`             | true          |          |
+| lint   | `boolean` | Should run `melos run lint:all`          | true          |          |
+| test   | `boolean` | Should run `melos run test:coverage:all` | true          |          |
+| runner | `string`  | Github actions runner                    | ubuntu-latest |          |
 
 
 

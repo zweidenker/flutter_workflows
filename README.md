@@ -23,6 +23,7 @@ Performs quality checks for repositories using [melos](https://github.com/invert
 | lint   | `boolean` | Should run `melos run lint:all`          | true          |          |
 | test   | `boolean` | Should run `melos run test:coverage:all` | true          |          |
 | runner | `string`  | Github actions runner                    | ubuntu-latest |          |
+| lfs    | `boolean` | Enable git lfs                           | false         |          |
 
 
 
@@ -99,6 +100,7 @@ Also in `/path/to/app/android/fastlane/Fastfile` there should be the following l
 | upload           | `boolean` | Should upload the App to Google Play. Note this will also check if the current workflow does **not** run on a pull_request event                                 | false         |          |
 | archiveArtifacts | `boolean` | If the workflow should archive apks and aabs. This normally should only be needed for a first release build to upload manually to Google Play or for certain PRs | false         |          |
 | runner           | `string`  | Github actions runner                                                                                                                                            | ubuntu-latest |          |
+| lfs              | `boolean` | Enable git lfs                                                                                                                                                   | false         |          |
 ### Secrets
 
 | Name                     | Description                                                                                                                                                   | required |
@@ -181,6 +183,7 @@ The following lanes are defined in `path/to/app/ios/fastlane/Fastfile`
 | fastlaneEnv  | `string`  | Fastlane Environment                                                                                                            |               | *        |
 | upload       | `boolean` | Should upload the App to Testflight. Note this will also check if the current workflow does **not** run on a pull_request event | false         |          |
 | runner       | `string`  | Github actions runner                                                                                                           | macos-latest  |          |
+| lfs          | `boolean` | Enable git lfs                                                                                                                  | false         |          |
 
 | Name                     | Description                                                                                                                                              | required |
 |--------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|----------|

@@ -13,6 +13,10 @@ on:
         required: false
         default: true
         type: boolean
+      lfs:
+        required: false
+        default: false
+        type: boolean
       runner:
         required: false
         type: string
@@ -25,6 +29,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          lfs: ${{ inputs.lfs }}
+      - name: Checkout LFS objects
+        if: ${{ inputs.lfs }}
+        run: git lfs checkout
       - uses: subosito/flutter-action@v2
       - uses: bluefireteam/melos-action@v1
 

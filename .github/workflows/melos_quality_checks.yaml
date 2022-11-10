@@ -13,11 +13,15 @@ on:
         required: false
         default: true
         type: boolean
+      runner:
+        required: false
+        type: string
+        default: ubuntu-latest
 
 jobs:
   quality:
     name: Quality Checks
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runner }}
 
     steps:
       - uses: actions/checkout@v2

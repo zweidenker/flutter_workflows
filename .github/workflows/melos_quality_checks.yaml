@@ -34,7 +34,7 @@ jobs:
         if: ${{ inputs.test }}
         run: melos run test:coverage:all
       - name: Archive Golden failures
-        if: always()
+        if: failure()
         uses: actions/upload-artifact@v3
         with:
           name: Golden failures

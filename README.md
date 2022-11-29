@@ -10,18 +10,20 @@ Workflows used at [ZWEIDENKER](https://zweidenker.de) to build and deploy Flutte
     with:
         setup: true
         lint: false
-        test:true
+        test: true
 ```
 
 Performs quality checks for repositories using [melos](https://github.com/invertase/melos)
 
 ### Inputs
 
-| Name  | Type      | Description                              | Default | required |
-|-------|-----------|------------------------------------------|---------|----------|
-| setup | `boolean` | Should run `melos run setup`             | true    |          |
-| lint  | `boolean` | Should run `melos run lint:all`          | true    |          |
-| test  | `boolean` | Should run `melos run test:coverage:all` | true    |          |
+| Name   | Type      | Description                              | Default       | required |
+|--------|-----------|------------------------------------------|---------------|----------|
+| setup  | `boolean` | Should run `melos run setup`             | true          |          |
+| lint   | `boolean` | Should run `melos run lint:all`          | true          |          |
+| test   | `boolean` | Should run `melos run test:coverage:all` | true          |          |
+| runner | `string`  | Github actions runner                    | ubuntu-latest |          |
+| lfs    | `boolean` | Enable git lfs                           | false         |          |
 
 
 
@@ -90,13 +92,15 @@ Also in `/path/to/app/android/fastlane/Fastfile` there should be the following l
 
 ### Inputs
 
-| Name             | Type      | Description                                                                                                                                                      | Default | required |
-|------------------|-----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|----------|
-| appDirectory     | `string`  | Directory where the app is based on the repository root. eg `packages/app`                                                                                       |         | *        |
-| buildApk         | `boolean` | Should build an Apk                                                                                                                                              | true    |          |
-| buildBundle      | `boolean` | Should build an App Bundle                                                                                                                                       | true    |          |
-| upload           | `boolean` | Should upload the App to Google Play. Note this will also check if the current workflow does **not** run on a pull_request event                                 | false   |          |
-| archiveArtifacts | `boolean` | If the workflow should archive apks and aabs. This normally should only be needed for a first release build to upload manually to Google Play or for certain PRs | false   |          |
+| Name             | Type      | Description                                                                                                                                                      | Default       | required |
+|------------------|-----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|----------|
+| appDirectory     | `string`  | Directory where the app is based on the repository root. eg `packages/app`                                                                                       |               | *        |
+| buildApk         | `boolean` | Should build an Apk                                                                                                                                              | true          |          |
+| buildBundle      | `boolean` | Should build an App Bundle                                                                                                                                       | true          |          |
+| upload           | `boolean` | Should upload the App to Google Play. Note this will also check if the current workflow does **not** run on a pull_request event                                 | false         |          |
+| archiveArtifacts | `boolean` | If the workflow should archive apks and aabs. This normally should only be needed for a first release build to upload manually to Google Play or for certain PRs | false         |          |
+| runner           | `string`  | Github actions runner                                                                                                                                            | ubuntu-latest |          |
+| lfs              | `boolean` | Enable git lfs                                                                                                                                                   | false         |          |
 ### Secrets
 
 | Name                     | Description                                                                                                                                                   | required |
@@ -178,6 +182,8 @@ The following lanes are defined in `path/to/app/ios/fastlane/Fastfile`
 | matchHost    | `string`  | Host that is used for fastlane match repository. This is needed, as ZWEIDENKER currently host our match repository on bitbucket | bitbucket.org |          |
 | fastlaneEnv  | `string`  | Fastlane Environment                                                                                                            |               | *        |
 | upload       | `boolean` | Should upload the App to Testflight. Note this will also check if the current workflow does **not** run on a pull_request event | false         |          |
+| runner       | `string`  | Github actions runner                                                                                                           | macos-latest  |          |
+| lfs          | `boolean` | Enable git lfs                                                                                                                  | false         |          |
 
 | Name                     | Description                                                                                                                                              | required |
 |--------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|----------|

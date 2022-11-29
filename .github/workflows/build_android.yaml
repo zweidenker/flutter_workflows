@@ -20,6 +20,18 @@ on:
         required: false
         default: false
         type: boolean
+      majorFactor:
+        required: false
+        default: 100000000
+        type: number
+      minorFactor:
+        required: false
+        default: 1000000
+        type: number
+      patchFactor:
+        required: false
+        default: 10000
+        type: number
       lfs:
         required: false
         default: false
@@ -67,7 +79,7 @@ jobs:
           IFS='+' read -r -a patchAndBuild <<< "${numbers[2]}"
           patch=${patchAndBuild[0]}
 
-          buildNumber=$(($(($(((major * 100000000) + (minor * 1000000))) + (patch * 10000))) + $GITHUB_RUN_NUMBER))
+          buildNumber=$(($(($(((major * ${{ inputs.majorFactor }}) + (minor * ${{ inputs.minorFactor }}))) + (patch * ${{ inputs.patchFactor }}))) + $GITHUB_RUN_NUMBER))
           echo BUILD_NUMBER=$buildNumber >> $GITHUB_ENV
       - name: Setup Signing
         env:

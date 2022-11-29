@@ -101,6 +101,9 @@ Also in `/path/to/app/android/fastlane/Fastfile` there should be the following l
 | archiveArtifacts | `boolean` | If the workflow should archive apks and aabs. This normally should only be needed for a first release build to upload manually to Google Play or for certain PRs | false         |          |
 | runner           | `string`  | Github actions runner                                                                                                                                            | ubuntu-latest |          |
 | lfs              | `boolean` | Enable git lfs                                                                                                                                                   | false         |          |
+| majorFactor      | `number`  | Custom factor for build number generation for major component                                                                                                    | 100000000     |          |
+| minorFactor      | `number`  | Custom factor for build number generation for minor component                                                                                                    | 1000000       |          |
+| patchFactor      | `number`  | Custom factor for build number generation for patch component                                                                                                    | 10000         |          |
 ### Secrets
 
 | Name                     | Description                                                                                                                                                   | required |

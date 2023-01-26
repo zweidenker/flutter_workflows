@@ -148,6 +148,7 @@ jobs:
 
           # Set ENV Variable https://docs.codemagic.io/yaml-basic-configuration/environment-variables/#artifact-links
           CM_ARTIFACT_LINKS=$(echo "{[{"type":"apk","url":\""$TEST_URL"\"}]}")
+          CM_PULL_REQUEST_NUMBER=${{ github.event.pull_request.number }}
 
           # Run codemagic_app_preview comment
           flutter pub global activate codemagic_app_preview

@@ -36,6 +36,10 @@ on:
         required: false
         default: false
         type: boolean
+      firebasePreview:
+        required: false
+        default: false
+        type: boolean
       runner:
         required: false
         type: string
@@ -52,6 +56,10 @@ on:
       keyAlias:
         required: true
       googleApiKey:
+        required: false
+      firebaseAppId:
+        required: false
+      firebaseServiceAccountJson:
         required: false
 
 jobs:
@@ -96,7 +104,7 @@ jobs:
           echo keyAlias="${{ env.keyAlias }}" >> ${{ env.keyPropertiesPath }}
           echo storeFile="${{ env.keystorePath }}" >> ${{ env.keyPropertiesPath }}
       - name: Build Apk
-        if: inputs.buildApk
+        if: inputs.buildApk || inputs.firebasePreview
         working-directory: ${{ inputs.appDirectory }}
         run: flutter build apk --build-number=${{ env.BUILD_NUMBER }} ${{ secrets.additionalBuildArguments}}
       - name: Build Bundle
@@ -122,3 +130,26 @@ jobs:
           lane: uploadApp
           subdirectory: ./${{ inputs.appDirectory }}/android
           bundle-install-path: "vendor/bundle"
+      - name: Firebase App Preview
+        if: ${{ inputs.firebasePreview }}
+        run: |
+          # Upload Apk to Firebase App Distribution
+          # https://firebase.google.com/docs/app-distribution/authenticate-service-account?platform=android
+          echo ${{secrets.firebaseServiceAccountJson}} > google_distribution_service_account.json
+          export GOOGLE_APPLICATION_CREDENTIALS=google_distribution_service_account.json
+          curl -sL https://firebase.tools | bash
+          FIREBASE_OUTPUT=$(firebase appdistribution:distribute  \
+            --app ${{ secrets.firebaseAppId }}  \
+            --release-notes "${{ env.GITHUB_REF_NAME }}" \
+            $(ls **/release/**/*.apk))
+
+          # Grab Testing Url
+          TEST_URL=$(echo $FIREBASE_OUTPUT | grep -E -o "(https://appdistribution.firebase.google.com/testerapps/.*)")
+
+          # Set ENV Variable https://docs.codemagic.io/yaml-basic-configuration/environment-variables/#artifact-links
+          CM_ARTIFACT_LINKS=$(echo "{[{"type":"apk","url":\""$TEST_URL"\"}]}")
+
+          # Run codemagic_app_preview comment
+          flutter pub global activate codemagic_app_preview
+          app_preview post --gh_token ${{ secrets.GITHUB_TOKEN }}
+          

@@ -142,7 +142,7 @@ jobs:
           FIREBASE_OUTPUT=$(firebase appdistribution:distribute  \
             --app ${{ secrets.firebaseAppId }}  \
             --release-notes "${{ env.GITHUB_REF_NAME }}" \
-            $(ls packages/**/release/**/*.apk))
+            $(ls ${{ inputs.appDirectory }}/**/release/**/*.apk))
 
           # Grab Testing Url
           TEST_URL=$(echo $FIREBASE_OUTPUT | grep -E -o "(https://appdistribution.firebase.google.com/testerapps/.*)")

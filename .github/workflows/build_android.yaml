@@ -144,8 +144,12 @@ jobs:
             --release-notes "${{ env.GITHUB_REF_NAME }}" \
             ${{ inputs.appDirectory }}/build/app/outputs/apk/release/app-release.apk)
 
+          echo $FIREBASE_OUTPUT
+
           # Grab Testing Url
           TEST_URL=$(echo $FIREBASE_OUTPUT | grep -E -o "(https://appdistribution.firebase.google.com/testerapps/.*)")
+          
+          echo $TEST_URL
 
           # Set ENV Variable https://docs.codemagic.io/yaml-basic-configuration/environment-variables/#artifact-links
           CM_ARTIFACT_LINKS=$(echo "{[{"type":"apk","url":\""$TEST_URL"\"}]}")

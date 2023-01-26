@@ -132,6 +132,7 @@ jobs:
           bundle-install-path: "vendor/bundle"
       - name: Firebase App Preview
         if: ${{ inputs.firebasePreview }}
+        shell: sh
         run: |
           # Upload Apk to Firebase App Distribution
           # https://firebase.google.com/docs/app-distribution/authenticate-service-account?platform=android

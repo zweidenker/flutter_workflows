@@ -138,6 +138,8 @@ jobs:
           # https://firebase.google.com/docs/app-distribution/authenticate-service-account?platform=android
           echo "${{secrets.firebaseServiceAccountJson}}" > ./google_distribution_service_account.json
           export GOOGLE_APPLICATION_CREDENTIALS=${{ github.workspace }}/google_distribution_service_account.json
+          echo $GOOGLE_APPLICATION_CREDENTIALS
+          cat $GOOGLE_APPLICATION_CREDENTIALS
           curl -sL https://firebase.tools | bash
           FIREBASE_OUTPUT=$(firebase appdistribution:distribute  \
             --app ${{ secrets.firebaseAppId }}  \

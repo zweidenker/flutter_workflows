@@ -133,14 +133,16 @@ jobs:
       - name: Firebase App Preview
         if: ${{ inputs.firebasePreview }}
         shell: sh
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/google_distribution_service_account.json
         run: |
           # Upload Apk to Firebase App Distribution
           # https://firebase.google.com/docs/app-distribution/authenticate-service-account?platform=android
-          echo "${{secrets.firebaseServiceAccountJson}}" > ./google_distribution_service_account.json
+          echo "${{secrets.firebaseServiceAccountJson}}" > ${{ github.workspace }}/google_distribution_service_account.json
+          export GOOGLE_APPLICATION_CREDENTIALS="${{ github.workspace }}/google_distribution_service_account.json"
         
           curl -sL https://firebase.tools | bash
+
+          echo $GOOGLE_APPLICATION_CREDENTIALS
+          
           firebase appdistribution:distribute  \
             --app ${{ secrets.firebaseAppId }}  \
             --release-notes "${{ env.GITHUB_REF_NAME }}" \

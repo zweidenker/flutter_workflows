@@ -142,7 +142,9 @@ jobs:
           curl -sL https://firebase.tools | bash
 
           echo $GOOGLE_APPLICATION_CREDENTIALS
-          
+
+          set
+
           firebase appdistribution:distribute  \
             --app ${{ secrets.firebaseAppId }}  \
             --release-notes "${{ env.GITHUB_REF_NAME }}" \

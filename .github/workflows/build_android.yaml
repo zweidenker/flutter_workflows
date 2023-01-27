@@ -139,14 +139,12 @@ jobs:
           # Upload Apk to Firebase App Distribution
           # https://firebase.google.com/docs/app-distribution/authenticate-service-account?platform=android
           echo "${{secrets.firebaseServiceAccountJson}}" > ./google_distribution_service_account.json
-          
-          echo $GOOGLE_APPLICATION_CREDENTIALS
-          cat $GOOGLE_APPLICATION_CREDENTIALS
+        
           curl -sL https://firebase.tools | bash
-          FIREBASE_OUTPUT=$(firebase appdistribution:distribute  \
+          firebase appdistribution:distribute  \
             --app ${{ secrets.firebaseAppId }}  \
             --release-notes "${{ env.GITHUB_REF_NAME }}" \
-            ${{ inputs.appDirectory }}/build/app/outputs/apk/release/app-release.apk)
+            ${{ inputs.appDirectory }}/build/app/outputs/apk/release/app-release.apk
 
           echo $FIREBASE_OUTPUT
 

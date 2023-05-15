@@ -19,6 +19,10 @@ on:
         required: false
         default: false
         type: boolean
+      buildNumberOffset:
+        required: false
+        default: 0
+        type: number
       runner:
         required: false
         type: string
@@ -51,15 +55,7 @@ jobs:
       - name: Set Build Number
         shell: bash
         run: |
-          file=./${{ inputs.appDirectory }}/pubspec.yaml
-          version=$(awk '/version/{print $NF}' "$file")
-          IFS='.' read -r -a numbers <<< "$version"
-          major=${numbers[0]}
-          minor=${numbers[1]}
-          IFS='+' read -r -a patchAndBuild <<< "${numbers[2]}"
-          patch=${patchAndBuild[0]}
-
-          buildNumber=$(($(($(((major * 100000000) + (minor * 1000000))) + (patch * 10000))) + $GITHUB_RUN_NUMBER))
+          buildNumber=$(${{ inputs.buildNumberOffset }} + $GITHUB_RUN_NUMBER)
           echo BUILD_NUMBER=$buildNumber >> $GITHUB_ENV
       - name: Match SSH Key
         run: |

@@ -63,7 +63,7 @@ jobs:
       - name: Set Build Number
         shell: bash
         run: |
-          buildNumber=$(${{ inputs.buildNumberOffset }} + $GITHUB_RUN_NUMBER)
+          buildNumber=$((${{ inputs.buildNumberOffset }} + $GITHUB_RUN_NUMBER))
           echo BUILD_NUMBER=$buildNumber >> $GITHUB_ENV
       - name: Setup Signing
         env:

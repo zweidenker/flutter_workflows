@@ -6,7 +6,7 @@ Workflows used at [ZWEIDENKER](https://zweidenker.de) to build and deploy Flutte
 
 ```yaml
   quality:
-    uses: zweidenker/flutter_workflows/.github/workflows/melos_quality_checks.yaml@v1
+    uses: zweidenker/flutter_workflows/.github/workflows/melos_quality_checks.yaml@v2
     with:
         setup: true
         lint: false
@@ -32,7 +32,7 @@ Performs quality checks for repositories using [melos](https://github.com/invert
 ```yaml
   build_android:
     needs: quality
-    uses: zweidenker/flutter_workflows/.github/workflows/build_android.yaml@v1
+    uses: zweidenker/flutter_workflows/.github/workflows/build_android.yaml@v2
     with:
       appDirectory: packages/app
       buildApk: false
@@ -92,18 +92,16 @@ Also in `/path/to/app/android/fastlane/Fastfile` there should be the following l
 
 ### Inputs
 
-| Name             | Type      | Description                                                                                                                                                      | Default       | required |
-|------------------|-----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|----------|
-| appDirectory     | `string`  | Directory where the app is based on the repository root. eg `packages/app`                                                                                       |               | *        |
-| buildApk         | `boolean` | Should build an Apk                                                                                                                                              | true          |          |
-| buildBundle      | `boolean` | Should build an App Bundle                                                                                                                                       | true          |          |
-| upload           | `boolean` | Should upload the App to Google Play. Note this will also check if the current workflow does **not** run on a pull_request event                                 | false         |          |
-| archiveArtifacts | `boolean` | If the workflow should archive apks and aabs. This normally should only be needed for a first release build to upload manually to Google Play or for certain PRs | false         |          |
-| runner           | `string`  | Github actions runner                                                                                                                                            | ubuntu-latest |          |
-| lfs              | `boolean` | Enable git lfs                                                                                                                                                   | false         |          |
-| majorFactor      | `number`  | Custom factor for build number generation for major component                                                                                                    | 100000000     |          |
-| minorFactor      | `number`  | Custom factor for build number generation for minor component                                                                                                    | 1000000       |          |
-| patchFactor      | `number`  | Custom factor for build number generation for patch component                                                                                                    | 10000         |          |
+| Name              | Type      | Description                                                                                                                                                                                                                                    | Default       | required |
+|-------------------|-----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|----------|
+| appDirectory      | `string`  | Directory where the app is based on the repository root. eg `packages/app`                                                                                                                                                                     |               | *        |
+| buildApk          | `boolean` | Should build an Apk                                                                                                                                                                                                                            | true          |          |
+| buildBundle       | `boolean` | Should build an App Bundle                                                                                                                                                                                                                     | true          |          |
+| upload            | `boolean` | Should upload the App to Google Play. Note this will also check if the current workflow does **not** run on a pull_request event                                                                                                               | false         |          |
+| archiveArtifacts  | `boolean` | If the workflow should archive apks and aabs. This normally should only be needed for a first release build to upload manually to Google Play or for certain PRs                                                                               | false         |          |
+| runner            | `string`  | Github actions runner                                                                                                                                                                                                                          | ubuntu-latest |          |
+| lfs               | `boolean` | Enable git lfs                                                                                                                                                                                                                                 | false         |          |
+| buildNumberOffset | `number`  | An Offset used to generate the BuildNumber. This will result in the build number being the offset + the Run Number of Github. This is only required if there are already builds on the Play Store in order to have an increasing Build Number. | 0             |          |
 ### Secrets
 
 | Name                     | Description                                                                                                                                                   | required |
@@ -120,7 +118,7 @@ Also in `/path/to/app/android/fastlane/Fastfile` there should be the following l
 
 ```yaml
   build_ios:
-    uses: zweidenker/flutter_workflows/.github/workflows/build_ios.yaml@v1
+    uses: zweidenker/flutter_workflows/.github/workflows/build_ios.yaml@v2
     with:
       appDirectory: packages/app
       fastlaneEnv: app
@@ -179,14 +177,15 @@ The following lanes are defined in `path/to/app/ios/fastlane/Fastfile`
 
 ### Inputs
 
-| Name         | Type      | Description                                                                                                                     | Default       | required |
-|--------------|-----------|---------------------------------------------------------------------------------------------------------------------------------|---------------|----------|
-| appDirectory | `string`  | Directory where the app is based on the repository root. eg `packages/app`                                                      |               | *        |
-| matchHost    | `string`  | Host that is used for fastlane match repository. This is needed, as ZWEIDENKER currently host our match repository on bitbucket | bitbucket.org |          |
-| fastlaneEnv  | `string`  | Fastlane Environment                                                                                                            |               | *        |
-| upload       | `boolean` | Should upload the App to Testflight. Note this will also check if the current workflow does **not** run on a pull_request event | false         |          |
-| runner       | `string`  | Github actions runner                                                                                                           | macos-latest  |          |
-| lfs          | `boolean` | Enable git lfs                                                                                                                  | false         |          |
+| Name              | Type      | Description                                                                                                                                                                                                                                   | Default       | required |
+|-------------------|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|----------|
+| appDirectory      | `string`  | Directory where the app is based on the repository root. eg `packages/app`                                                                                                                                                                    |               | *        |
+| matchHost         | `string`  | Host that is used for fastlane match repository. This is needed, as ZWEIDENKER currently host our match repository on bitbucket                                                                                                               | bitbucket.org |          |
+| fastlaneEnv       | `string`  | Fastlane Environment                                                                                                                                                                                                                          |               | *        |
+| upload            | `boolean` | Should upload the App to Testflight. Note this will also check if the current workflow does **not** run on a pull_request event                                                                                                               | false         |          |
+| runner            | `string`  | Github actions runner                                                                                                                                                                                                                         | macos-latest  |          |
+| lfs               | `boolean` | Enable git lfs                                                                                                                                                                                                                                | false         |          |
+| buildNumberOffset | `number`  | An Offset used to generate the BuildNumber. This will result in the build number being the offset + the Run Number of Github. This is only required if there are already builds on the App Store in order to have an increasing Build Number. | 0             |          |
 
 | Name                     | Description                                                                                                                                              | required |
 |--------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|----------|

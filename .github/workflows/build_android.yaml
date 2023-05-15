@@ -20,17 +20,9 @@ on:
         required: false
         default: false
         type: boolean
-      majorFactor:
+      buildNumberOffset:
         required: false
-        default: 100000000
-        type: number
-      minorFactor:
-        required: false
-        default: 1000000
-        type: number
-      patchFactor:
-        required: false
-        default: 10000
+        default: 0
         type: number
       lfs:
         required: false
@@ -71,15 +63,7 @@ jobs:
       - name: Set Build Number
         shell: bash
         run: |
-          file=./${{ inputs.appDirectory }}/pubspec.yaml
-          version=$(awk '/version/{print $NF}' "$file")
-          IFS='.' read -r -a numbers <<< "$version"
-          major=${numbers[0]}
-          minor=${numbers[1]}
-          IFS='+' read -r -a patchAndBuild <<< "${numbers[2]}"
-          patch=${patchAndBuild[0]}
-
-          buildNumber=$(($(($(((major * ${{ inputs.majorFactor }}) + (minor * ${{ inputs.minorFactor }}))) + (patch * ${{ inputs.patchFactor }}))) + $GITHUB_RUN_NUMBER))
+          buildNumber=$((${{ inputs.buildNumberOffset }} + $GITHUB_RUN_NUMBER))
           echo BUILD_NUMBER=$buildNumber >> $GITHUB_ENV
       - name: Setup Signing
         env:

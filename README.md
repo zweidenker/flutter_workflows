@@ -6,7 +6,7 @@ Workflows used at [ZWEIDENKER](https://zweidenker.de) to build and deploy Flutte
 
 ```yaml
   quality:
-    uses: zweidenker/flutter_workflows/.github/workflows/melos_quality_checks.yaml@v1
+    uses: zweidenker/flutter_workflows/.github/workflows/melos_quality_checks.yaml@v2
     with:
         setup: true
         lint: false
@@ -32,7 +32,7 @@ Performs quality checks for repositories using [melos](https://github.com/invert
 ```yaml
   build_android:
     needs: quality
-    uses: zweidenker/flutter_workflows/.github/workflows/build_android.yaml@v1
+    uses: zweidenker/flutter_workflows/.github/workflows/build_android.yaml@v2
     with:
       appDirectory: packages/app
       buildApk: false
@@ -118,7 +118,7 @@ Also in `/path/to/app/android/fastlane/Fastfile` there should be the following l
 
 ```yaml
   build_ios:
-    uses: zweidenker/flutter_workflows/.github/workflows/build_ios.yaml@v1
+    uses: zweidenker/flutter_workflows/.github/workflows/build_ios.yaml@v2
     with:
       appDirectory: packages/app
       fastlaneEnv: app

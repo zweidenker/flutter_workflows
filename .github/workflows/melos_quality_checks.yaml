@@ -21,6 +21,10 @@ on:
         required: false
         type: string
         default: ubuntu-latest
+      flutterVersion:
+        required: false
+        type: string
+        default: stable
 
 jobs:
   quality:
@@ -35,6 +39,8 @@ jobs:
         if: ${{ inputs.lfs }}
         run: git lfs checkout
       - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ inputs.flutterVersion }}
       - uses: bluefireteam/melos-action@v1
 
       - name: Setup

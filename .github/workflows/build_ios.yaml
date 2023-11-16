@@ -27,6 +27,10 @@ on:
         required: false
         type: string
         default: macos-latest
+      flutterVersion:
+        required: false
+        type: string
+        default: stable
     secrets:
       additionalBuildArguments:
         required: false
@@ -51,6 +55,8 @@ jobs:
         if: ${{ inputs.lfs }}
         run: git lfs checkout
       - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ inputs.flutterVersion }}
 
       - name: Set Build Number
         shell: bash

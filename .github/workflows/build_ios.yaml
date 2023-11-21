@@ -30,7 +30,7 @@ on:
       flutterVersion:
         required: false
         type: string
-        default: stable
+        
     secrets:
       additionalBuildArguments:
         required: false

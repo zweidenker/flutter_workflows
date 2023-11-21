@@ -24,7 +24,6 @@ on:
       flutterVersion:
         required: false
         type: string
-        default: stable
 
 jobs:
   quality:

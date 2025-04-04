@@ -103,7 +103,7 @@ jobs:
         run: flutter build appbundle --build-number=${{ env.BUILD_NUMBER }} ${{ secrets.additionalBuildArguments}}
       - name: Archive Artifacts
         if: inputs.archiveArtifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Android Apps
           retention-days: 5

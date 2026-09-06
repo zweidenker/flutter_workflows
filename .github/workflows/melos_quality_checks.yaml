@@ -25,7 +25,7 @@ on:
         required: false
         type: string
       gitDependencyUrl:
-        description: URL prefix the gitDependencyToken is used for. Keep it as narrow as the private repository (e.g. https://github.com/my-org/my-package) so public repositories, including those Xcode resolves via Swift Package Manager, are still cloned anonymously.
+        description: URL prefix the gitDependencyToken is used for, matched on whole path components. Use the exact clone URL of the private repository as written in pubspec.yaml (e.g. https://github.com/my-org/my-package.git) or an organization prefix (https://github.com/my-org/). Everything else keeps the workflow's default credentials.
         required: false
         type: string
         default: https://github.com/
@@ -54,9 +54,16 @@ jobs:
         # below and get a 403 for any other private repository.
         env:
           GIT_DEPENDENCY_URL: ${{ inputs.gitDependencyUrl }}
+        # actions/checkout stores the workflow's GITHUB_TOKEN as an Authorization
+        # header for https://github.com/ in the checked-out repository's config.
+        # Keep it: Xcode's Swift Package Manager clones public packages with it,
+        # and anonymous clones from runners are throttled by GitHub. Add a more
+        # specific header for the private repository; git uses the most specific
+        # http.<url> match, so only that repository is fetched with the token.
         run: |
-          git config --unset-all http.https://github.com/.extraheader || true
-          git config --global url."https://x-access-token:${GIT_DEPENDENCY_TOKEN}@${GIT_DEPENDENCY_URL#https://}".insteadOf "${GIT_DEPENDENCY_URL}"
+          auth=$(printf 'x-access-token:%s' "$GIT_DEPENDENCY_TOKEN" | base64 | tr -d '\n')
+          echo "::add-mask::${auth}"
+          git config "http.${GIT_DEPENDENCY_URL}.extraheader" "AUTHORIZATION: basic ${auth}"
           # Never wait for interactive credentials on a runner; fail with a message instead.
           echo "GIT_TERMINAL_PROMPT=0" >> "$GITHUB_ENV"
       - name: Checkout LFS objects

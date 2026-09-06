@@ -33,6 +33,8 @@ Performs quality checks for repositories using [melos](https://github.com/invert
 |--------------------|-----------------------------------------------------------------------------------------------|----------|
 | gitDependencyToken | Token with read access to private GitHub repositories used as git dependencies in pubspec.yaml |          |
 
+Together with the input `gitDependencyUrl` (default `https://github.com/`): the URL prefix the token is used for. Narrow it to the private repository, e.g. `https://github.com/my-org/my-package`, so public repositories (including Swift packages resolved by Xcode) are still cloned anonymously; a token without access to them would otherwise make git wait for credentials.
+
 The same secret is accepted by Build Android and Build iOS. Pass it when a `pubspec.yaml` references a private repository:
 
 ```yaml

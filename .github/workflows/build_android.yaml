@@ -70,7 +70,13 @@ jobs:
           lfs: ${{ inputs.lfs }}
       - name: Git credentials for private dependencies
         if: ${{ env.GIT_DEPENDENCY_TOKEN != '' }}
-        run: git config --global url."https://x-access-token:${GIT_DEPENDENCY_TOKEN}@github.com/".insteadOf "https://github.com/"
+        # actions/checkout stores the workflow's GITHUB_TOKEN as an Authorization
+        # header in the checked-out repository's config; git commands pub runs
+        # inside the workspace would send that header instead of the token
+        # below and get a 403 for any other private repository.
+        run: |
+          git config --unset-all http.https://github.com/.extraheader || true
+          git config --global url."https://x-access-token:${GIT_DEPENDENCY_TOKEN}@github.com/".insteadOf "https://github.com/"
       - name: Checkout LFS objects
         if: ${{ inputs.lfs }}
         run: git lfs checkout

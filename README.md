@@ -27,6 +27,19 @@ Performs quality checks for repositories using [melos](https://github.com/invert
 
 
 
+### Secrets
+
+| Name               | Description                                                                                   | required |
+|--------------------|-----------------------------------------------------------------------------------------------|----------|
+| gitDependencyToken | Token with read access to private GitHub repositories used as git dependencies in pubspec.yaml |          |
+
+The same secret is accepted by Build Android and Build iOS. Pass it when a `pubspec.yaml` references a private repository:
+
+```yaml
+    secrets:
+      gitDependencyToken: ${{ secrets.MY_PACKAGES_TOKEN }}
+```
+
 ## Build Android
 
 ```yaml

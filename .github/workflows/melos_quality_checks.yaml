@@ -50,6 +50,8 @@ jobs:
         run: |
           git config --unset-all http.https://github.com/.extraheader || true
           git config --global url."https://x-access-token:${GIT_DEPENDENCY_TOKEN}@github.com/".insteadOf "https://github.com/"
+          # Never wait for interactive credentials on a runner; fail with a message instead.
+          echo "GIT_TERMINAL_PROMPT=0" >> "$GITHUB_ENV"
       - name: Checkout LFS objects
         if: ${{ inputs.lfs }}
         run: git lfs checkout

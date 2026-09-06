@@ -35,6 +35,11 @@ on:
       flutterVersion:
         required: false
         type: string
+      gitDependencyUrl:
+        description: URL prefix the gitDependencyToken is used for, matched on whole path components. Use the exact clone URL of the private repository as written in pubspec.yaml (e.g. https://github.com/my-org/my-package.git) or an organization prefix (https://github.com/my-org/). Everything else keeps the workflow's default credentials.
+        required: false
+        type: string
+        default: https://github.com/
       javaVersion:
         required: false
         type: string
@@ -70,7 +75,25 @@ jobs:
           lfs: ${{ inputs.lfs }}
       - name: Git credentials for private dependencies
         if: ${{ env.GIT_DEPENDENCY_TOKEN != '' }}
-        run: git config --global url."https://x-access-token:${GIT_DEPENDENCY_TOKEN}@github.com/".insteadOf "https://github.com/"
+        # actions/checkout stores the workflow's GITHUB_TOKEN as an Authorization
+        # header in the checked-out repository's config; git commands pub runs
+        # inside the workspace would send that header instead of the token
+        # below and get a 403 for any other private repository.
+        env:
+          GIT_DEPENDENCY_URL: ${{ inputs.gitDependencyUrl }}
+        # actions/checkout stores the workflow's GITHUB_TOKEN as an Authorization
+        # header for https://github.com/ in the checked-out repository's config;
+        # that stays untouched. The dependency token is added as a header for the
+        # private repository's URL only, so no other clone (Swift packages
+        # resolved by Xcode included) is affected. Git uses the most specific
+        # http.<url> match.
+        run: |
+          auth=$(printf 'x-access-token:%s' "$GIT_DEPENDENCY_TOKEN" | base64 | tr -d '\n')
+          echo "::add-mask::${auth}"
+          # Global, because pub's `git clone` does not read the checked-out repository's config.
+          git config --global "http.${GIT_DEPENDENCY_URL}.extraheader" "AUTHORIZATION: basic ${auth}"
+          # Never wait for interactive credentials on a runner; fail with a message instead.
+          echo "GIT_TERMINAL_PROMPT=0" >> "$GITHUB_ENV"
       - name: Checkout LFS objects
         if: ${{ inputs.lfs }}
         run: git lfs checkout

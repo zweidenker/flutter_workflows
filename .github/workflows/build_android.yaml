@@ -41,6 +41,9 @@ on:
         default: ''
 
     secrets:
+      gitDependencyToken:
+        description: Token with read access to private GitHub repositories referenced as git dependencies in pubspec.yaml
+        required: false
       additionalBuildArguments:
         required: false
       keyStore:
@@ -58,11 +61,16 @@ jobs:
   build_android:
     name: Build Android App
     runs-on: ${{ inputs.runner }}
+    env:
+      GIT_DEPENDENCY_TOKEN: ${{ secrets.gitDependencyToken }}
 
     steps:
       - uses: actions/checkout@v2
         with:
           lfs: ${{ inputs.lfs }}
+      - name: Git credentials for private dependencies
+        if: ${{ env.GIT_DEPENDENCY_TOKEN != '' }}
+        run: git config --global url."https://x-access-token:${GIT_DEPENDENCY_TOKEN}@github.com/".insteadOf "https://github.com/"
       - name: Checkout LFS objects
         if: ${{ inputs.lfs }}
         run: git lfs checkout

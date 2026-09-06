@@ -55,15 +55,16 @@ jobs:
         env:
           GIT_DEPENDENCY_URL: ${{ inputs.gitDependencyUrl }}
         # actions/checkout stores the workflow's GITHUB_TOKEN as an Authorization
-        # header for https://github.com/ in the checked-out repository's config.
-        # Keep it: Xcode's Swift Package Manager clones public packages with it,
-        # and anonymous clones from runners are throttled by GitHub. Add a more
-        # specific header for the private repository; git uses the most specific
-        # http.<url> match, so only that repository is fetched with the token.
+        # header for https://github.com/ in the checked-out repository's config;
+        # that stays untouched. The dependency token is added as a header for the
+        # private repository's URL only, so no other clone (Swift packages
+        # resolved by Xcode included) is affected. Git uses the most specific
+        # http.<url> match.
         run: |
           auth=$(printf 'x-access-token:%s' "$GIT_DEPENDENCY_TOKEN" | base64 | tr -d '\n')
           echo "::add-mask::${auth}"
-          git config "http.${GIT_DEPENDENCY_URL}.extraheader" "AUTHORIZATION: basic ${auth}"
+          # Global, because pub's `git clone` does not read the checked-out repository's config.
+          git config --global "http.${GIT_DEPENDENCY_URL}.extraheader" "AUTHORIZATION: basic ${auth}"
           # Never wait for interactive credentials on a runner; fail with a message instead.
           echo "GIT_TERMINAL_PROMPT=0" >> "$GITHUB_ENV"
       - name: Checkout LFS objects
